@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block current_home %} active {% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row justify-content-between mx-2 align-items-center py-3 border-bottom">
+    <div class="col-5">
+      <h2 >Annunci disponibili:</h2>
+    </div>
+    <div class="col-5 d-flex justify-content-end">
+      <div class="dropdown">
+        <a class="btn border shadow-sm rounded-3 dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img class="icona" src="{{url_for('static', filename='immagini/filtro.svg')}}" alt="Icona filtro">
+        </a>
+        <ul class="dropdown-menu">
+          <!-- Qua creo un filtro che se cliccato fa ricaricare la pagina passando un parametro 0-1 in base all'ordinamento che si vuole -->
+          <li><a class="dropdown-item default" href="{{url_for('home', filter=0)}}">{% if filter == 0  %}<strong>Ordina per prezzo decrescente </strong>{% else %} Ordina per prezzo decrescente {% endif %}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('home', filter=1)}}">{% if filter == 1 %}<strong>Ordina per numero di locali crescenti</strong>{% else %} Ordina per numero di locali crescenti{% endif %}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-around">
+    {% for annuncio in annunci %}
+    {% set glob={} %}
+    {% set counter = glob.update({'count':0}) %}
+      <div class="container g-0 col-5 border shadow-sm rounded-5 my-3 p-4 align-items-center larghezza-card">
+        <div class="row h-row-1 align-items-center"> 
+          <div class="col-9 d-flex flex-column justify-content-between">
+            <h4 >{{annuncio.titolo | e}}</h3>
+          </div>
+          <div class="col-3">
+            <h5 class="text-center "><strong>{{annuncio.prezzo_mensile | e}}</strong> € / mese</h5>
+          </div>
+        </div>
+        <div class="row h-row-2">
+          <div class="col-9">
+            <p>{{annuncio.indirizzo | e}}</p>
+          </div>
+        </div>
+        <div class="row h-row-3">
+          <div class="col-9">
+            <div id="carouselExample-{{annuncio.id_annuncio}}" class="carousel slide carousel-fade">
+              <div class="carousel-inner">
+                {% for f in foto %}
+                  {% if f.id_annuncio == annuncio.id_annuncio %}
+                    <div class="carousel-item {% if glob['count'] == 0 %}active{% endif %}">
+                      <img src="{{url_for('static', filename='immagini/' + f.url_immagine)}}" class="d-block w-100" alt="Immagine carosello">
+                    </div>
+                    {% set _ = glob.update({'count':1}) %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-{{annuncio.id_annuncio}}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-{{annuncio.id_annuncio}}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>    
+          </div>
+          <div class="col-3 vstack gap-3 text-center my-auto">
+            <div class="col-12">
+              <img class="icona" src="{% if annuncio.arredata %} {{url_for('static', filename='immagini/siarredo.svg')}} {% else %} {{url_for('static', filename='immagini/noarredo.svg')}}{% endif %}"  alt="Icona arredamento">
+              <p>{% if not annuncio.arredata %}Non {% endif %}Arredata</p>
+            </div>
+            <div class="col-12">
+              <img class="icona" src="{% if annuncio.categoria_casa == 1 %} {{url_for('static', filename='immagini/casaindipendente.svg')}} {% else%} {{url_for('static', filename='immagini/' + annuncio.titolo_categoria + '.svg')}} {% endif %}"  alt="Icona categoria">
+              <p> {{annuncio.titolo_categoria | e}}</p>
+            </div>
+            <div class="col-12">
+              <img class="icona" src="{{url_for('static', filename='immagini/camera.svg')}}"  alt="Icona locali">
+              <p> Locali: {{annuncio.numero_locali | e}} {% if annuncio.numero_locali > 4 %} + {% endif %}</p>
+            </div>              
+            <div class="col-12">
+              <a href="{{url_for('mostra_annuncio', id_annuncio=annuncio.id_annuncio)}}" class="btn btn-primary">Scopri</a>
+            </div>
+          </div>
+        </div>
+      </div>  
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

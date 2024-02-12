@@ -1,0 +1,271 @@
+/* Fonts */
+.merriweather-regular {
+    font-family: "Merriweather", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Dato che il sito è solo per versione desktop sotto i 1024 pixel non mostra più niente */
+#responsivita {
+    display: none;
+}
+/* Il sito è visibile solo da desktop */
+@media only screen and (max-width: 1024px) {
+    #responsivita {
+        display: block;
+    }
+    .navbar {
+        display: none; 
+    }
+    .page-content {
+        display: none;
+    }
+    .nav {
+        display: none;
+    }
+}
+
+/* Alerts */
+.alert {
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-weight: 500;
+    font-size: large;
+}
+/* Body */ 
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+body {
+    position: relative;
+    min-height: 100vh;
+}
+.page-content {
+    padding-bottom: 6.5rem;
+}
+p {
+    margin-bottom: 0;
+}
+/* Navbar */
+nav {
+    height: 12vh;
+    
+}
+.navbar-brand {
+    font-size: xx-large;
+}
+.navbar-brand img  {
+    width: 16vh;
+    height: 8vh;
+
+}
+
+/* Pagina d'inizio */
+.bg-image {
+    background-image: url("immagini/torino.jpg");
+    height: 75vh;
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: grayscale(30%); 
+    
+}
+.nav-item {
+    margin-right: 2rem;
+}
+.my-card {
+    height: 30vh;   
+    color: white;
+    text-shadow: 1px 1px 2px #0d6efd;
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    border: 0;
+    justify-content: center
+
+}
+.btn-start {
+    border: 1px solid;
+    border-color: #ffffff;
+}
+/* Login */
+.my-icon {
+    width: max-content;
+    height: max-content;
+    padding: 0.375rem 0.75rem;
+    background-color: #ff9700;
+    border-radius: 15%;
+    filter: invert(1);
+}
+.form-group {
+    margin-top: 1.25rem;
+}
+.my-btn {
+    margin-inline: 5%;
+}
+.logo-grande {
+    height: 10vh;
+    width: 20vh;
+}
+.my-box {
+    margin-top: 2rem;
+}
+/* Iscriviti */
+
+.my-box-iscriviti {
+    margin-top: 1rem;
+}
+#termini {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #0d6efd;
+    text-decoration: underline;
+}
+.form-check {
+    margin-top: 0.5rem;
+}
+
+/* Home */
+
+.dropdown-toggle:hover {
+    background-color: #dddddd;
+}
+.carousel-item {
+    height: 35vh;
+}
+.carousel-item img{
+    /* width 100% è già inclusa nel carosello con w-100 */
+    height: 100%;
+    object-fit: cover; 
+    overflow: hidden;
+}
+.icona {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+.larghezza-card {
+    width: 47vw;
+    
+}
+.h-row-1 {
+    height: 7vh;
+}
+.h-row-2 {
+    height: 3vh;
+}
+.h-row-3 {
+    height: 35vh;
+}
+/* Footer */
+
+footer {
+    height: 5rem;
+    position: absolute;
+    bottom: 0;
+    width:100%;
+}
+
+/* Annuncio */
+
+.freccia-indietro {
+    height: 2rem;
+    width: 2rem;
+}
+
+.oggetto-carosello-grande {
+    height: 50vh;
+}
+.annuncio-profilo {
+    width: 50%;
+    border-radius: 100%;
+    object-fit: cover;
+    overflow: hidden;
+}
+.piccola-icona {
+    height: 2.5rem;
+    width:50%;
+}
+
+/* I miei dati */
+
+.profilo-immagine {
+    height: 50%;
+    width: 50%;
+    border-radius: 100%;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+/* I miei annunci */
+
+.non-disponibile {
+    filter: grayscale(100%);
+}
+
+.container-scrollabile {
+    overflow-y: auto;
+    max-height: 35vh;
+}
+
+/* Modal */
+
+.descrizione {
+    height: 10vh;
+}
+.img-thumbnail {
+    height: 15vh;
+    width: 15vw;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+/* Accordion di prenotazioni nei miei annunci */
+
+.icona-prenotazioni {
+    width:1rem;
+    height:1rem;
+}
+.accordion {
+    --bs-accordion-btn-focus-box-shadow: none;
+    --bs-accordion-active-color: black;
+
+}
+.accordion-accettata {
+    --bs-accordion-btn-bg: #A5D6A7;
+    --bs-accordion-active-bg: #A5D6A7;
+    
+}
+.accordion-rifiutata {
+    --bs-accordion-btn-bg: #EF9A9A;
+    --bs-accordion-active-bg: #EF9A9A;
+
+}
+
+.accordion-richiesta {
+    --bs-accordion-btn-bg: #e9ecef;
+    --bs-accordion-active-bg: #e9ecef;
+}
+  
+/* Prenotazioni effettuate */
+.bg-header-accettata {
+    background-color: #A5D6A7;
+}
+.bg-header-rifiutata {
+    background-color: #EF9A9A;
+}
+.bg-header-richiesta {
+    background-color: #e9ecef;
+}
+datalist {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    writing-mode: vertical-lr;
+    width: 100%;
+}
+datalist option {
+    transform: rotate(-90deg);
+}
+

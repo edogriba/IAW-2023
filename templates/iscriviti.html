@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block title %} Iscriviti {% endblock %}
+{% block current_home %}{% endblock %}
+{% block current_iscriviti %} active {% endblock%}
+{% block current_login %}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center">
+
+  <div class="col-5 justify-content-center px-4">
+    <div class="my-box-iscriviti text-center">
+        <img class="logo-grande" src="{{url_for('static', filename='immagini/logo.png')}}"  alt="Logo">
+    </div>
+    <div class="my-box-iscriviti text-center">
+        <h3 class="mb-0"> Crea il tuo account</h3>
+    </div>
+    <form action="{{url_for('iscrizione')}}" method="POST" enctype="multipart/form-data">
+      <div class="container justify-content-center">
+        <div class="row justify-content-between">
+          <div class="form-group col-5 text-center">
+            <label for="nome">Nome</label>
+            <input type="text" class="form-control" minlength="2" maxlength="25" id="nome" name="nome" aria-describedby="emailHelp" placeholder="Nome" required>
+          </div>
+          <div class="form-group col-5 text-center">
+            <label for="cognome">Cognome</label>
+            <input type="text" class="form-control" minlength="2" maxlength="30" id="cognome" name="cognome" aria-describedby="emailHelp" placeholder="Cognome" required>
+          </div>
+        </div>
+        <div class="row justify-content-between text-center align-items-center">
+          <div class="form-group col-5">
+            <p>Tipo di utente</p>
+            <div class="justify-content-center d-flex">   
+              <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tipo_utente" id="flexRadioDefault2" value="Cliente" required>
+                  <label class="form-check-label" for="flexRadioDefault2">Cliente</label>
+              </div>
+              <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tipo_utente" id="flexRadioDefault1" value="Locatario"required>
+                  <label class="form-check-label" for="flexRadioDefault1">Locatario</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-7"> 
+            <label for="immagine_profilo" class="form-label">Aggiungi un'immagine del profilo, se vuoi</label>
+            <input class="form-control" name="immagine_profilo" id="immagine_profilo" type="file" accept=".jpg,.png,.jpeg">
+          </div> 
+        </div>
+        <div class="row justify-content-center text-center">
+          <div class="form-group text-center">
+            <label for="email">Indirizzo email</label>
+            <div class="d-flex  align-items-center">
+              <div class="my-icon text-center">
+                <img src="{{url_for('static', filename='immagini/email.svg')}}" alt="email">
+              </div>
+              <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email" required>
+            </div>
+            <small id="emailHelp" class="form-text text-muted">Non condivideremo mai la tua mail con aziende terze! </small>
+          </div>
+        </div>
+        <div class="row justify-content-center text-center">
+          <div class="form-group text-center">
+            <label for="password">Password</label>
+            <div class="d-flex  align-items-center">
+              <div class="my-icon text-center">
+                <img src="{{url_for('static', filename='immagini/password.svg')}}" alt="password">
+              </div>
+              <input type="password" class="form-control" minlength="4" id="password" name="password" placeholder="Password" required>
+            </div>
+          </div>
+        </div>
+          <div class="form-group">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="checkbox" required>
+                <label class="form-check-label" for="checkbox">Sono d'accordo con i <button type="button" id="termini" data-bs-toggle="modal" data-bs-target="#staticBackdrop">termini e le condizioni d'uso </button></label>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Iscriviti</button>
+          </div>
+          <small>Hai già un account? Fai il login <a href="{{url_for('login')}}">qui</a></small>
+      </div>
+    </form>
+  </div>  
+</div> 
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Termini e condizioni d'uso</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            1. ACCETTAZIONE DEI TERMINI
+
+          </p>
+
+          <p>
+
+            Accedendo o utilizzando il sito web RenTo (di seguito denominato "il Sito"), l'utente accetta di essere vincolato dai seguenti Termini d'Uso e Condizioni (di seguito denominati "i Termini"). Se non si accetta tali Termini, si prega di astenersi dall'utilizzare il Sito.
+          
+          </p>
+
+          <p>
+            
+            2. DESCRIZIONE DEI SERVIZI
+
+          </p>
+
+          <p>
+            
+            Il Sito fornisce una piattaforma online che permette agli utenti di affittare e noleggiare beni e servizi (di seguito denominati "gli Oggetti") tra loro. Il Sito facilita la comunicazione tra l'Affittuario e l'Affittante.
+            
+          </p>
+
+          <p>
+            
+            3. REGISTRAZIONE DELL'UTENTE
+
+          </p>
+
+          <p>
+            
+            Per utilizzare alcune funzionalità del Sito, è necessario registrarsi creando un account. L'utente è responsabile di mantenere la sicurezza delle proprie credenziali di accesso e di informare immediatamente il Sito in caso di accesso non autorizzato.
+            
+          </p>
+
+          <p>
+
+            4. DIRITTI E RESPONSABILITÀ DELL'AFFITTANTE
+
+          </p>
+
+          <p>
+            
+            L'Affittante è responsabile di fornire informazioni accurate sugli Oggetti, di rispettare gli accordi di noleggio stipulati tramite il Sito e di garantire che gli Oggetti siano in buone condizioni. L'Affittante è tenuto a rispettare le leggi locali in merito all'affitto di beni.
+            
+          </p>
+
+          <p>
+            
+            5. DIRITTI E RESPONSABILITÀ DELL'AFFITTUARIO
+
+          </p>
+
+          <p>
+            
+            L'Affittuario è responsabile di leggere attentamente le informazioni sugli Oggetti prima di noleggiarli, di rispettare gli accordi stipulati tramite il Sito e di restituire gli Oggetti nelle stesse condizioni in cui li ha ricevuti.
+            
+          </p>
+
+          <p>
+            
+            6. PAGAMENTI E TRANSAZIONI
+
+          </p>
+
+          <p>
+            
+            Il Sito può richiedere il pagamento di una commissione per ogni transazione effettuata attraverso la piattaforma. Tutti i pagamenti devono essere effettuati attraverso i metodi di pagamento accettati dal Sito.
+            
+          </p>
+
+          <p>
+            
+            7. POLITICA DI CANCELLAZIONE E RIMBORSO
+
+          </p>
+
+          <p>
+            
+            Le politiche di cancellazione e rimborso possono variare a seconda degli accordi stipulati tra Affittante e Affittuario. È responsabilità di entrambe le parti concordare e rispettare tali politiche.
+            
+          </p>
+
+          <p>
+            
+            8. PROPRIETÀ INTELLETTUALE
+
+          </p>
+
+          <p>
+            
+            Tutti i contenuti presenti sul Sito, compresi testi, immagini, marchi e loghi, sono di proprietà del Sito o dei rispettivi titolari dei diritti e sono protetti dalle leggi sulla proprietà intellettuale.
+            
+          </p>
+
+          <p>
+            
+            9. LIMITAZIONI DI RESPONSABILITÀ
+
+          </p>
+
+          <p>
+            
+            Il Sito non è responsabile per eventuali danni, perdite o controversie derivanti dall'utilizzo della piattaforma. Gli utenti sono incoraggiati a risolvere eventuali dispute direttamente tra di loro.
+            
+          </p>
+
+          <p>
+            
+            10. MODIFICHE AI TERMINI
+
+          </p>
+
+          <p>
+            
+            Il Sito si riserva il diritto di modificare i presenti Termini in qualsiasi momento. Le modifiche saranno pubblicate sul Sito e si applicheranno con effetto immediato per gli utenti. È responsabilità dell'utente verificare periodicamente i Termini.
+            
+          </p>
+
+          <p>
+            
+            11. LEGGE APPLICABILE E FORO COMPETENTE
+
+          </p>
+
+          <p>
+            
+            I presenti Termini sono regolati e interpretati in conformità con le leggi dello Stato italiano. Qualsiasi controversia derivante o relativa a questi Termini sarà sottoposta alla giurisdizione esclusiva dei tribunali competenti nello Stato italiano.
+            
+            Accettando questi Termini, l'utente dichiara di aver letto e compreso il contenuto del contratto e accetta di essere vincolato dai suddetti Termini d'Uso e Condizioni.
+        
+          </p>
+
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary"  data-bs-dismiss="modal">Preso visione</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

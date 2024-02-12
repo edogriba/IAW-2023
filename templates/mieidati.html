@@ -1,0 +1,61 @@
+{% extends "profilo.html" %}
+{% block active_dati %} active {% endblock %}
+{% block profilo %}
+<div class="d-flex justify-content-evenly mt-5">
+<div class="card rounded-3 shadow col-2 justify-content-center align-items-center">
+    <img class="profilo-immagine mb-4" src="{{url_for('static', filename='immagini/' + current_user.immagine_profilo)}}" alt="Immagine profilo">
+    <!-- Bottone che triggera il modale -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modale-immagine-profilo">
+        Sostituisci
+    </button>
+    <div class="modal fade" id="modale-immagine-profilo" tabindex="-1" aria-labelledby="label-modale-immagine-profilo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="label-modale-immagine-profilol">Cambia immagine del profilo</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <form action="{{url_for('cambia_immagine_profilo')}}" method="POST" enctype="multipart/form-data">
+                <label for="img-sostitutiva-profilo" class="form-label">Sostituisci l'immagine profilo</label>
+                <input class="form-control" name="img-sostitutiva-profilo" id="img-sostitutiva-profilo" type="file" accept=".png, .jpg, .jpeg" required>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                    <button type="submit" class="btn btn-danger">Sostituisci</button>
+                </div>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+  
+</div>
+<div class="card rounded-3 shadow col-7 p-4">
+    <table class="table">
+        <thead class="border-bottom">
+            <tr>
+                <th class="text-primary">I miei dati</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">Nome</th>
+            <td>{{current_user.nome | e}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Cognome</th>
+            <td>{{current_user.cognome | e}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Email</th>
+            <td>{{current_user.email | e}}</td>
+        </tr>
+        <tr>
+            <th scope="row">Tipo di utente</th>
+            <td>{{current_user.tipo_utente | e}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %} Crea annuncio {% endblock %}
+{% block current_crea_annuncio %} active {% endblock %}
+{% block content %}
+<div class="container-fluid justify-content-center mt-4"> 
+    <div class="container">
+        <h2>Creazione annuncio</h2> 
+        <form action="{{url_for('nuovo_annuncio')}}" method="POST" enctype="multipart/form-data">
+            <div class="row justify-content-between">
+                <div class="form-group col-4">
+                    <label for="titolo" class="form-label">Titolo</label>
+                    <input type="text" minlength="3" maxlength="50" class="form-control" name="titolo" id="titolo" placeholder="Titolo del tuo annuncio" required>
+                </div>
+                <div class="form-group col-4">
+                    <label for="indirizzo" class="form-label">Indirizzo</label>
+                    <input type="text" minlength="5" maxlength="40" class="form-control" name="indirizzo" id="indirizzo" placeholder="Indirizzo della proprietà" required>
+                </div>
+    
+                <div class="form-group col-2">
+                    <label for="prezzo_mensile" class="form-label col-12 px-0">Prezzo mensile</label>
+                    <input type="number" class="form-control" name="prezzo_mensile" id="prezzo_mensile" required>
+                </div>
+            </div> 
+            <div class="row justify-content-evenly">      
+                <div class="form-group col-12">
+                    <label for="descrizione" class="form-label col-12 px-0">Descrizione</label>
+                    <textarea class="form-control descrizione" minlength="10" maxlength="350" name="descrizione" id="descrizione"  id="floatingTextarea" placeholder="Descrivi la tua proprietà" required></textarea>
+                </div>  
+            </div>           
+            <div class="row justify-content-between">
+                <div class="form-group col-2">
+                    <label for="categoria_casa" class="form-label">Categoria casa</label>
+                    <select class="form-control" name="categoria_casa" id="categoria_casa" required>
+                        {% for categoria in categorie %}
+                        <option value="{{categoria.id_categoria}}">{{categoria.titolo_categoria | e}}</option>
+                        {% endfor%}
+                    </select>
+                </div>
+                <div class="form-group col-1">                                                         
+                    <small>Disponibile</small>
+                        <div class="d-flex justify-content-center">       
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="disponibile" id="flexRadioDisponibile" value="1" required>
+                                <label class="form-check-label" for="flexRadioDisponibile">Si</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="disponibile" id="flexRadioNonDisponibile" value="0" required>
+                                <label class="form-check-label" for="flexRadioNonDisponibile">No</label>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="form-group col-1">                                                         
+                        <small>Arredata</small>
+                        <div class="d-flex justify-content-center">       
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="arredata" id="flexRadioArredata" value="1" required>
+                                <label class="form-check-label" for="flexRadioArredata">Si</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="arredata" id="flexRadioNonArredata" value="0" required>
+                                <label class="form-check-label" for="flexRadioNonArredata">No</label>
+                            </div>
+                        </div>
+                    </div>
+                
+                <div class="form-group col-3">
+                    <label for="numero_locali" class="form-label col-12 px-0">Numero di locali</label>
+                    <input type="range" class="form-range" min="1" max="5" step="1" name="numero_locali" id="numero_locali"  list="values" required />
+                    <datalist id="numero_locali">
+                        <option value="1" label="1"></option>
+                        <option value="2" label="2"></option>
+                        <option value="3" label="3"></option>
+                        <option value="4" label="4"></option>
+                        <option value="5" label="5+"></option>
+                    </datalist>
+                </div>
+            </div>
+            <div class="row justify-content-between align-items-center">
+                {% for j in range(5) %}
+                    <div class="form-group col-2"> 
+                        <label for="img-aggiunta-{{j}}" class="form-label">Aggiungi un'immagine, se vuoi</label>
+                        <input class="form-control" name="img-aggiunta-{{j}}" id="img-aggiunta-{{j}}" type="file" accept=".png, .jpg, .jpeg"  {% if loop.first %} required {% endif %}>
+                    </div> 
+                {% endfor %}
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Crea annuncio</button>
+            </div>    
+        </form>
+    </div>
+</div>
+{% endblock %}

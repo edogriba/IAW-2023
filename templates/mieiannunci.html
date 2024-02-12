@@ -1,0 +1,616 @@
+{% extends "profilo.html" %}
+{% block active_annunci %} active {% endblock %}
+{% block profilo %}
+<div class="container-fluid">
+    <div class="row justify-content-around py-3 border-bottom">
+        <div class="col-5">
+            <h2 >I miei annunci disponibili: </h2>
+    </div>
+    <div class="col-5">
+    </div>
+    </div>
+    {% if annunci_disponibili %}
+    <div class="row justify-content-around">
+      {% for annuncio in annunci_disponibili %}
+        {% set glob2={} %}
+        {% set counter2 = glob2.update({'count':0}) %}
+        <div class="container border shadow-sm rounded-5 mx-0 my-3 col-6">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-7 mb-md-0 p-md-4">
+              <div id="carouselExample-mioannuncio-{{annuncio.id_annuncio}}" class="carousel slide carousel-fade">
+                <div class="carousel-inner">
+                  {% for f in foto %}
+                    {% if f.id_annuncio == annuncio.id_annuncio %}
+                      <div class="carousel-item {% if glob2['count'] == 0 %} active {% endif %}">
+                        <img src="{{url_for('static', filename='immagini/' + f.url_immagine)}}" class="d-block w-100" alt="Immagine carosello">
+                      </div>
+                      {% set _ = glob2.update({'count':1}) %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-mioannuncio-{{annuncio.id_annuncio}}" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-mioannuncio-{{annuncio.id_annuncio}}" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>    
+            </div>
+            <div class="vstack gap-3 col-5 p-4 ps-0 my-auto">
+              <div class="row">
+                <h5 class="titolo-apt mt-0">{{annuncio.titolo | e}}</h5>
+                <p class="m-0">{{annuncio.indirizzo | e}}</p>
+              </div>
+              <div class="row">
+                <h4 class="mb-0"><strong>{{annuncio.prezzo_mensile | e}}</strong> € / mese</h4>
+              </div>  
+              <div class="row align-items-center">
+                <div class="col-6 text-center">
+                  <img class="icona" src="{% if annuncio.arredata %} {{url_for('static', filename='immagini/siarredo.svg')}} {% else %} {{url_for('static', filename='immagini/noarredo.svg')}}{% endif %}" alt="Icona arredamento">
+                  <p>{% if not annuncio.arredata %}Non {% endif %}Arredata</p>
+                </div>
+                <div class="col-6 text-center">
+                  <img class="icona" src="{% if annuncio.categoria_casa == 1 %} {{url_for('static', filename='immagini/casaindipendente.svg')}} {% else%} {{url_for('static', filename='immagini/' + annuncio.titolo_categoria + '.svg')}} {% endif %}" alt="Icona categoria">
+                  <p> {{annuncio.titolo_categoria | e}}</p>
+                </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-6 text-center">
+                  <img class="icona" src="{{url_for('static', filename='immagini/camera.svg')}}" alt="Icona locali">
+                  <p class="mb-0"> Locali: {{annuncio.numero_locali}} {% if annuncio.numero_locali > 4 %} + {% endif %}</p>
+                </div>
+                <div class="col-6 text-center">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#static-{{annuncio.id_annuncio}}">
+                    Modifica
+                  </button>
+                  <!-- Modale triggerato dal bottone  -->
+                  <div class="modal modal-xl fade" id="static-{{annuncio.id_annuncio}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="label-{{annuncio.id_annuncio}}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="label-{{annuncio.id_annuncio}}">Modifica annuncio</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{url_for('modifica_annuncio', id_annuncio=annuncio.id_annuncio)}}" method="post" enctype="multipart/form-data">
+                          <div class="modal-body">
+                            <div class="row justify-content-between">
+                              <div class="form-group col-5 mt-0">
+                              <label for="titolo" class="form-label">Titolo</label>
+                                <input type="text" class="form-control" minlength="4" maxlength="50" name="titolo" id="titolo" value="{{annuncio.titolo}}" required>
+                              </div>
+                              <div class="form-group col-1 mt-0">                                                         
+                                <small>Disponibile</small>
+                                <div class="d-flex justify-content-center">       
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="disponibile" id="flexRadioDisponibile" value="1" checked required>
+                                      <label class="form-check-label" for="flexRadioDisponibile">Si</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="disponibile" id="flexRadioNonDisponibile" value="0" required>
+                                      <label class="form-check-label" for="flexRadioNonDisponibile">No</label>
+                                  </div>
+                                </div>
+                              </div> 
+                              <div class="form-group col-1 mt-0">                                                         
+                                <small>Arredata</small>
+                                <div class="d-flex justify-content-center">       
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="arredata" id="flexRadioArredata" value="1" {% if annuncio.arredata %} checked {% endif %} required>
+                                      <label class="form-check-label" for="flexRadioArredata">Si</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="arredata" id="flexRadioNonArredata" value="0" {% if not annuncio.arredata %} checked {% endif %} required>
+                                      <label class="form-check-label" for="flexRadioNonArredata">No</label>
+                                  </div>
+                                </div>
+                              </div> 
+                              <div class="form-group col-2 mt-0">
+                                <label for="prezzo_mensile" class="form-label col-12 px-0">Prezzo mensile</label>
+                                <input type="number" class="form-control" name="prezzo_mensile" id="prezzo_mensile" value="{{annuncio.prezzo_mensile}}" required>
+                              </div>
+                            </div> 
+                            <div class="row justify-content-evenly">      
+                              <div class="form-group col-12">
+                                <label for="descrizione-nd" class="form-label col-12 px-0">Descrizione</label>
+                                <textarea class="form-control descrizione" minlength="10" maxlength="350" name="descrizione" id="descrizione-nd"  id="floatingTextarea" required>{{annuncio.descrizione | e}}</textarea>
+                              </div>  
+                            </div>           
+                              <div class="row justify-content-between">
+                                <div class="form-group col-5">
+                                  <label for="categoria_casa" class="form-label">Categoria casa</label>
+                                  <select class="form-control" name="categoria_casa" id="categoria_casa" value="{{annuncio.categoria_casa}}" required>
+                                      {% for categoria in categorie %}
+                                      <option value="{{categoria.id_categoria}}" {% if categoria.id_categoria == annuncio.categoria_casa %} selected {% endif%}>{{categoria.titolo_categoria | e}}</option>
+                                      {% endfor%}
+                                  </select>
+                                </div>
+                                <div class="form-group col-5">
+                                  <label for="numero_locali" class="form-label col-12 px-0">Numero di locali</label>
+                                  <input type="range" class="form-range" min="1" max="5" step="1" value="{{annuncio.numero_locali}}" name="numero_locali" id="numero_locali"  list="values" required />
+                                  <datalist id="numero_locali">
+                                    <option value="1" label="1"></option>
+                                    <option value="2" label="2"></option>
+                                    <option value="3" label="3"></option>
+                                    <option value="4" label="4"></option>
+                                    <option value="5" label="5+"></option>
+                                  </datalist>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                              <div class="col-12 text-start">
+                                <p><small>* Nota: Se si sceglie di cancellare l'immagine, l'immagine non sarà sostituita</small></p>
+                              </div>
+                              <div class="row justify-content-between align-items-center mt-2">
+                                {% set count = namespace(value=0) %}
+                                {% set image_set = namespace(value=0)%}
+                                {% for j in range(5) %}
+                                  {% for img in foto %}
+                                    {% if img.id_annuncio == annuncio.id_annuncio %}
+                                      {% if img.indice_foto == count.value %}
+                                        <div class="col-2">
+                                          <label for="flexRadioCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}">Cancellare la foto?</label>
+                                          <div class="d-flex justify-content-center">       
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" id="flexRadioCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" value="1" required>
+                                                <label class="form-check-label" for="flexRadioCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}">Si</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" id="flexRadioNonCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" value="0" checked required>
+                                                <label class="form-check-label" for="flexRadioNonCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}">No</label>
+                                            </div>
+                                          </div>
+                                          <div class="my-3">
+                                          <img class="img-thumbnail" src="{{url_for('static', filename='immagini/' + img.url_immagine)}}" alt="Thumbnail">
+                                          </div>
+                                          <div> 
+                                            <label for="img-sostitutiva-{{annuncio.id_annuncio}}-{{image_set.value}}" class="form-label">Sostituisci l'immagine</label>
+                                            <input class="form-control" name="img-sostitutiva-{{annuncio.id_annuncio}}-{{image_set.value}}" id="img-sostitutiva-{{annuncio.id_annuncio}}-{{image_set.value}}" type="file" accept=".png, .jpg, .jpeg">
+                                          </div> 
+                                        </div>
+                                        {% set image_set.value = image_set.value + 1 %}
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endfor %}
+                                  {% set count.value = count.value + 1 %}
+                                    {% if image_set.value == count.value - 1 %}
+                                      <div class="col-2 my-3"> 
+                                        <label for="img-aggiunta-{{annuncio.id_annuncio}}-{{image_set.value}}" class="form-label">Aggiungi un'immagine, se vuoi</label>
+                                        <input class="form-control" name="img-aggiunta-{{annuncio.id_annuncio}}-{{image_set.value}}" id="img-aggiunta-{{annuncio.id_annuncio}}-{{image_set.value}}" type="file" accept=".png, .jpg, .jpeg">
+                                      </div> 
+                                      {% set image_set.value = count.value %}
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                          <button type="submit" class="btn btn-danger">Modifica</button>
+                        </div>
+                      </form>
+                      </div>
+                    </div>
+                  </div>                                
+              </div>
+              </div>
+            </div>
+        </div>
+        </div>
+      <div class="col-5 p-0 m-0">
+        <h3 class="mt-4">Prenotazioni</h3>
+        <div class="container-scrollabile">
+              <div class="accordion " id="accordion-{{annuncio.id_annuncio}}">
+              {% for prenotazione in prenotazioni %}
+              {% if prenotazione.id_annuncio == annuncio.id_annuncio %}
+                <div class="accordion-item accordion-{{prenotazione.stato}}">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{prenotazione.id_prenotazione}}" aria-expanded="true" aria-controls="collapse-{{prenotazione.id_prenotazione}}">
+                      <p>Prenotazione {{prenotazione.stato | e}}, Data: <strong>{{ prenotazione.data | e}}</strong>, Ora: {{prenotazione.orario | e}}</p>
+                  </h2>
+                  <div id="collapse-{{prenotazione.id_prenotazione}}" class="accordion-collapse collapse" data-bs-parent="accordion-{{annuncio.id_annuncio}}">
+                    <div class="accordion-body">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="col-7 d-flex">
+                          <div class="col-4">
+                            <p>Richiedente:</p>
+                            <p>Email: </p>
+                            <p>Tipo di visita:</p>
+                          </div>
+                          <div class="col-8">
+                            <p><strong>{{prenotazione.nome | e}} {{prenotazione.cognome | e}}</strong></p>
+                            <p>{{prenotazione.email | e}}</p>
+                            <p>In {{prenotazione.tipo_visita | e}}</p>
+                          </div>
+                        </div>
+                          {% if prenotazione.stato == 'richiesta' %} 
+                          <div class="col-2">
+                            <button class="btn btn-primary" data-bs-target="#modale-{{prenotazione.id_prenotazione}}" data-bs-toggle="modal">Gestisci</button>
+                            <!-- Modale trigerrato dal bottone  -->
+                            <div class="modal fade" id="modale-{{prenotazione.id_prenotazione}}" aria-hidden="true" aria-labelledby="label-{{prenotazione.id_prenotazione}}" tabindex="-1">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="modale-{{prenotazione.id_prenotazione}}">Riassunto della prenotazione</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="d-flex">
+                                      <div class="col-4">
+                                        <p>Richiedente:</p>
+                                        <p>Data e orario: </p>
+                                        <p>Tipo di visita:</p>
+                                      </div>
+                                      <div class="col-8">
+                                        <p><strong>{{prenotazione.nome | e}} {{prenotazione.cognome | e}}</strong></p>
+                                        <p> {{prenotazione.data | e}}, {{prenotazione.orario | e}}</p>
+                                        <p>In {{prenotazione.tipo_visita | e}}</p>
+                                      </div>
+                                    </div>
+                                    <h5 class="mt-2">Vuoi accettare o rifiutare?</h5>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button class="btn btn-danger" data-bs-target="#modale-rifiuta-{{prenotazione.id_prenotazione}}" data-bs-toggle="modal">Rifiuta</button>
+                                    <a href="{{url_for('accetta_prenotazione', id_prenotazione=prenotazione.id_prenotazione)}}"><button class="btn btn-success" data-bs-toggle="modal">Accetta</button></a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal fade" id="modale-rifiuta-{{prenotazione.id_prenotazione}}" aria-hidden="true" aria-labelledby="label-rifiuta-{{prenotazione.id_prenotazione}}" tabindex="-1">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="label-rifiuta-{{prenotazione.id_prenotazione}}">Motivazione rifiuto</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form action="{{url_for('rifiuta_prenotazione', id_prenotazione=prenotazione.id_prenotazione)}}" id="form-rifiuta-{{prenotazione.id_prenotazione}}" method="POST">
+                                      <div class="form-group col-12">
+                                        <label for="floatingTextarea-rifiuta-{{prenotazione.id_prenotazione}}" class="form-label col-12 px-0">Motivazione</label>
+                                        <textarea class="form-control" name="motivazione" minlength="6" maxlength="100" id="floatingTextarea-rifiuta-{{prenotazione.id_prenotazione}}" required></textarea>
+                                      </div> 
+                                      <div class="d-flex mt-2 col-12 justify-content-end">
+                                        <button class="btn btn-primary" type="submit" form="form-rifiuta-{{prenotazione.id_prenotazione}}">Invia</button> 
+                                      </div>
+                                    </form>
+                                  </div>
+                                  <div class="modal-footer justify-content-start">
+                                      <button class="btn btn-secondary" data-bs-target="#modale-{{prenotazione.id_prenotazione}}" data-bs-toggle="modal" data-bs-dismiss="modal">Torna indietro</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% elif prenotazione.stato == 'rifiutata' %}
+                          <div class="col-5">
+                            <p>Motivazione rifiuto:</p>
+                            <p>{{prenotazione.motivazione}}</p>
+                          </div>
+                          {% endif %}
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+              </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+        <div class="container-fluid">
+          <div class="alert alert-secondary mt-4 text-center" role="alert">
+            Non hai annunci disponibili!
+          </div>
+        </div>
+    {% endif %}
+    <div class="row justify-content-around py-3 border-bottom">
+        <div class="col-5">
+            <h2 >I miei annunci non disponibili: </h2>
+        </div>
+        <div class="col-5">
+        </div>
+    </div>
+    {% if annunci_non_disponibili %}
+    <div class="row justify-content-around">
+      {% for annuncio in annunci_non_disponibili %}
+        {% set glob2={} %}
+        {% set counter2 = glob2.update({'count':0}) %}
+        <div class="container border shadow-sm rounded-5 mx-0 my-3 col-6">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-7 mb-md-0 p-md-4">
+              <div id="carouselExample-mioannuncio-{{annuncio.id_annuncio}}" class="carousel slide carousel-fade non-disponibile">
+                <div class="carousel-inner">
+                  {% for f in foto %}
+                    {% if f.id_annuncio == annuncio.id_annuncio %}
+                      <div class="carousel-item {% if glob2['count'] == 0 %} active {% endif %}">
+                        <img src="{{url_for('static', filename='immagini/' + f.url_immagine)}}" class="d-block w-100" alt="Immagine carosello">
+                      </div>
+                      {% set _ = glob2.update({'count':1}) %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample-mioannuncio-{{annuncio.id_annuncio}}" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample-mioannuncio-{{annuncio.id_annuncio}}" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>    
+            </div>
+            <div class="vstack gap-3 col-5 p-4 ps-0 my-auto">
+              <div class="row">
+                <h5 class="titolo-apt mt-0">{{annuncio.titolo | e}}</h5>
+                <p class="m-0">{{annuncio.indirizzo | e}}</p>
+              </div>
+              <div class="row">
+                <h4 class="mb-0"><strong>{{annuncio.prezzo_mensile | e}}</strong> € / mese</h4>
+              </div>  
+              <div class="row align-items-center">
+                <div class="col-6 text-center">
+                  <img class="icona" src="{% if annuncio.arredata %} {{url_for('static', filename='immagini/siarredo.svg')}} {% else %} {{url_for('static', filename='immagini/noarredo.svg')}}{% endif %}" alt="Icona arredamento">
+                  <p>{% if not annuncio.arredata %}Non {% endif %}Arredata</p>
+                </div>
+                <div class="col-6 text-center">
+                  <img class="icona" src="{% if annuncio.categoria_casa == 1 %} {{url_for('static', filename='immagini/casaindipendente.svg')}} {% else%} {{url_for('static', filename='immagini/' + annuncio.titolo_categoria + '.svg')}} {% endif %}" alt="Icona categoria">
+                  <p> {{annuncio.titolo_categoria | e}}</p>
+                </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-6 text-center">
+                  <img class="icona" src="{{url_for('static', filename='immagini/camera.svg')}}" alt="Icona locali">
+                  <p class="mb-0"> Locali: {{annuncio.numero_locali | e}} {% if annuncio.numero_locali > 4 %} + {% endif %}</p>
+                </div>
+                <div class="col-6 text-center">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#static-{{annuncio.id_annuncio}}">
+                    Modifica
+                  </button>
+                  <div class="modal modal-xl fade" id="static-{{annuncio.id_annuncio}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="label-{{annuncio.id_annuncio}}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="label-{{annuncio.id_annuncio}}">Modifica annuncio</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{url_for('modifica_annuncio', id_annuncio=annuncio.id_annuncio)}}" method="post" enctype="multipart/form-data">
+                          <div class="modal-body">
+                            <div class="row justify-content-between">
+                              <div class="form-group col-5 mt-0">
+                              <label for="titolo" class="form-label">Titolo</label>
+                                <input type="text" class="form-control" minlength="3" maxlength="50" name="titolo" id="titolo" value="{{annuncio.titolo}}" required>
+                              </div>
+                              <div class="form-group col-1 mt-0">                                                         
+                                <small>Disponibile</small>
+                                <div class="d-flex justify-content-center">       
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="disponibile" id="flexRadioDisponibile" value="1" required>
+                                      <label class="form-check-label" for="flexRadioDisponibile">Si</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="disponibile" id="flexRadioNonDisponibile" value="0" checked required>
+                                      <label class="form-check-label" for="flexRadioNonDisponibile">No</label>
+                                  </div>
+                                </div>
+                              </div> 
+                              <div class="form-group col-1 mt-0">                                                         
+                                <small>Arredata</small>
+                                <div class="d-flex justify-content-center">       
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="arredata" id="flexRadioArredata" value="1" {% if annuncio.arredata %} checked {% endif %} required>
+                                      <label class="form-check-label" for="flexRadioArredata">Si</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                      <input class="form-check-input" type="radio" name="arredata" id="flexRadioNonArredata" value="0" {% if not annuncio.arredata %} checked {% endif %} required>
+                                      <label class="form-check-label" for="flexRadioNonArredata">No</label>
+                                  </div>
+                                </div>
+                              </div> 
+                              <div class="form-group col-2 mt-0">
+                                <label for="prezzo_mensile" class="form-label col-12 px-0">Prezzo mensile</label>
+                                <input type="number" class="form-control" name="prezzo_mensile" id="prezzo_mensile" value="{{annuncio.prezzo_mensile}}" required>
+                              </div>
+                            </div> 
+                            <div class="row justify-content-evenly">      
+                              <div class="form-group col-12">
+                                <label for="descrizione-d" class="form-label col-12 px-0">Descrizione</label>
+                                <textarea class="form-control descrizione" minlength="10" maxlength="350" name="descrizione" id="descrizione-d"  id="floatingTextarea" required>{{annuncio.descrizione | e}}</textarea>
+                              </div>  
+                            </div>           
+                              <div class="row justify-content-between">
+                                <div class="form-group col-5">
+                                  <label for="categoria_casa" class="form-label">Categoria casa</label>
+                                  <select class="form-control" name="categoria_casa" id="categoria_casa" value="{{annuncio.categoria_casa}}" required>
+                                      {% for categoria in categorie %}
+                                      <option value="{{categoria.id_categoria}}" {% if categoria.id_categoria == annuncio.categoria_casa %} selected {% endif%}>{{categoria.titolo_categoria | e}}</option>
+                                      {% endfor%}
+                                  </select>
+                                </div>
+                                <div class="form-group col-5">
+                                  <label for="numero_locali" class="form-label col-12 px-0">Numero di locali</label>
+                                  <input type="range" class="form-range" min="1" max="5" step="1" value="{{annuncio.numero_locali}}" name="numero_locali" id="numero_locali"  list="values" required />
+                                  <datalist id="numero_locali">
+                                    <option value="1" label="1"></option>
+                                    <option value="2" label="2"></option>
+                                    <option value="3" label="3"></option>
+                                    <option value="4" label="4"></option>
+                                    <option value="5" label="5+"></option>
+                                  </datalist>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                              <div class="col-12 text-start">
+                                <p><small>* Nota: Se si sceglie di cancellare l'immagine, l'immagine non sarà sostituita</small></p>
+                              </div>
+                              <div class="row justify-content-between align-items-center mt-2">
+                                {% set count = namespace(value=0) %}
+                                {% set image_set = namespace(value=0)%}
+                                {% for j in range(5) %}
+                                  {% for img in foto %}
+                                    {% if img.id_annuncio == annuncio.id_annuncio %}
+                                      {% if img.indice_foto == count.value %}
+                                        <div class="col-2">
+                                          <label for="flexRadioCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}">Cancellare la foto?</label>
+                                          <div class="d-flex justify-content-center">       
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" id="flexRadioCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" value="1" required>
+                                                <label class="form-check-label" for="flexRadioCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}">Si</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="cancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" id="flexRadioNonCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}" value="0" checked required>
+                                                <label class="form-check-label" for="flexRadioNonCancellazione-{{annuncio.id_annuncio}}-{{image_set.value}}">No</label>
+                                            </div>
+                                          </div>
+                                          <div class="my-3">
+                                          <img class="img-thumbnail" src="{{url_for('static', filename='immagini/' + img.url_immagine)}}" alt="Thumbnail">
+                                          </div>
+                                          <div> 
+                                            <label for="img-sostitutiva-{{annuncio.id_annuncio}}-{{image_set.value}}" class="form-label">Sostituisci l'immagine</label>
+                                            <input class="form-control" name="img-sostitutiva-{{annuncio.id_annuncio}}-{{image_set.value}}" id="img-sostitutiva-{{annuncio.id_annuncio}}-{{image_set.value}}" type="file" accept=".png, .jpg, .jpeg">
+                                          </div> 
+                                        </div>
+                                        {% set image_set.value = image_set.value + 1 %}
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endfor %}
+                                  {% set count.value = count.value + 1 %}
+                                    {% if image_set.value == count.value - 1 %}
+                                      <div class="col-2 my-3"> 
+                                        <label for="img-aggiunta-{{annuncio.id_annuncio}}-{{image_set.value}}" class="form-label">Aggiungi un'immagine, se vuoi</label>
+                                        <input class="form-control" name="img-aggiunta-{{annuncio.id_annuncio}}-{{image_set.value}}" id="img-aggiunta-{{annuncio.id_annuncio}}-{{image_set.value}}" type="file" accept=".png, .jpg, .jpeg">
+                                      </div> 
+                                      {% set image_set.value = count.value %}
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                          <button type="submit" class="btn btn-danger">Modifica</button>
+                        </div>
+                      </form>
+                      </div>
+                    </div>
+                  </div>                                
+              </div>
+              </div>
+            </div>
+        </div>
+        </div>
+      <div class="col-5 p-0 m-0">
+        <h3 class="mt-4">Prenotazioni</h3>
+        <div class="container-scrollabile">
+              <div class="accordion " id="accordion-{{annuncio.id_annuncio}}">
+              {% for prenotazione in prenotazioni %}
+              {% if prenotazione.id_annuncio == annuncio.id_annuncio %}
+                <div class="accordion-item accordion-{{prenotazione.stato}}">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{prenotazione.id_prenotazione}}" aria-expanded="true" aria-controls="collapse-{{prenotazione.id_prenotazione}}">
+                      <p>Prenotazione {{prenotazione.stato | e}}, Data: <strong>{{ prenotazione.data | e}}</strong>, Ora: {{prenotazione.orario | e}}</p>
+                    </button>
+                  </h2>
+                  <div id="collapse-{{prenotazione.id_prenotazione}}" class="accordion-collapse collapse" data-bs-parent="accordion-{{annuncio.id_annuncio}}">
+                    <div class="accordion-body">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="col-7 d-flex">
+                          <div class="col-4">
+                            <p>Richiedente:</p>
+                            <p>Email: </p>
+                            <p>Tipo di visita:</p>
+                          </div>
+                          <div class="col-8">
+                            <p><strong>{{prenotazione.nome | e}} {{prenotazione.cognome | e}}</strong></p>
+                            <p>{{prenotazione.email | e}}</p>
+                            <p>In {{prenotazione.tipo_visita | e}}</p>
+                          </div>
+                        </div>
+                          {% if prenotazione.stato == 'richiesta' %} 
+                          <div class="col-2 ">
+                            <button class="btn btn-primary" data-bs-target="#modale-{{prenotazione.id_prenotazione}}" data-bs-toggle="modal">Gestisci</button>
+                            <!-- Modale triggerato dal bottone -->
+                            <div class="modal fade" id="modale-{{prenotazione.id_prenotazione}}" aria-hidden="true" aria-labelledby="modale-label-{{prenotazione.id_prenotazione}}" tabindex="-1">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="modale-label-{{prenotazione.id_prenotazione}}">Riassunto della prenotazione</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="d-flex">
+                                      <div class="col-4">
+                                        <p>Richiedente:</p>
+                                        <p>Data e orario: </p>
+                                        <p>Tipo di visita:</p>
+                                      </div>
+                                      <div class="col-8">
+                                        <p><strong>{{prenotazione.nome | e}} {{prenotazione.cognome | e}}</strong></p>
+                                        <p> {{prenotazione.data | e}}, {{prenotazione.orario | e}}</p>
+                                        <p>In {{prenotazione.tipo_visita | e}}</p>
+                                      </div>
+                                    </div>
+                                    <h5 class="mt-2 mb-0">Vuoi accettare o rifiutare?</h5>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button class="btn btn-danger" data-bs-target="#modale-rifiuta-{{prenotazione.id_prenotazione}}" data-bs-toggle="modal">Rifiuta</button>
+                                    <a href="{{url_for('accetta_prenotazione', id_prenotazione=prenotazione.id_prenotazione)}}"><button class="btn btn-success" data-bs-toggle="modal">Accettami</button></a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal fade" id="modale-rifiuta-{{prenotazione.id_prenotazione}}" aria-hidden="true" aria-labelledby="label-rifiuta-{{prenotazione.id_prenotazione}}" tabindex="-1">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="label-rifiuta-{{prenotazione.id_prenotazione}}">Motivazione rifiuto</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form action="{{url_for('rifiuta_prenotazione', id_prenotazione=prenotazione.id_prenotazione)}}" id="form-rifiuta-{{prenotazione.id_prenotazione}}" method="POST">
+                                      <div class="form-group col-12">
+                                        <label for="floatingTextarea-rifiuta-{{prenotazione.id_prenotazione}}" class="form-label col-12 px-0">Motivazione</label>
+                                        <textarea class="form-control" name="motivazione" minlength="6" maxlength="100" id="floatingTextarea-rifiuta-{{prenotazione.id_prenotazione}}" required></textarea>
+                                      </div> 
+                                      <div class="d-flex mt-2 col-12 justify-content-end">
+                                        <button class="btn btn-primary" type="submit" form="form-rifiuta-{{prenotazione.id_prenotazione}}">Invia</button> 
+                                      </div>
+                                    </form>
+                                  </div>
+                                  <div class="modal-footer justify-content-start">
+                                      <button class="btn btn-secondary" data-bs-target="#modale-{{prenotazione.id_prenotazione}}" data-bs-toggle="modal" data-bs-dismiss="modal">Torna indietro</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                            {% elif prenotazione.stato == 'rifiutata' %}
+                            <div class="col-5">
+                              <p>Motivazione rifiuto:</p>
+                              <p>{{prenotazione.motivazione}}</p>
+                            </div>
+                            {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+              </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+        <div class="container-fluid">
+          <div class="alert alert-secondary mt-4 text-center" role="alert">
+            Non hai annunci non disponibili!
+          </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

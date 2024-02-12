@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %} Annuncio {% endblock %}
+{% block content %} 
+<div class="container-fluid mx-2 mt-1">
+  <a href="{{url_for('home', filter=0)}}" class=" d-flex text-decoration-none text-black align-items-center">
+    <img class="freccia-indietro " src="{{url_for('static', filename='immagini/back.svg')}}" alt="back">
+    <p class="m-0">Home</p>
+  </a>
+</div>
+<div class="row align-items-center justify-content-evenly">
+  <main class="col-7 g-0  ">
+    <h1>{{annuncio.titolo | e}}</h1>
+    <h4>{{annuncio.indirizzo | e}}</h4>
+  </main>
+  <aside class="col-4">
+
+  </aside>
+</div>
+<div class="row align-items-center justify-content-evenly">
+<main class="col-7 g-0">
+  <div id="carosello" class="carousel slide carousel-fade">
+      <div class="carousel-inner">
+          {% for f in foto %}
+            <div class="carousel-item oggetto-carosello-grande {% if loop.first %} active {% endif %}">
+              <img src="{{url_for('static', filename='immagini/' + f.url_immagine)}}" class="d-block w-100" alt="Immagine della casa">
+            </div>
+          {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carosello" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carosello" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+  </div>    
+</main>
+<aside class="col-4">
+  <div class="vstack gap-5 my-auto">
+    <div class="card rounded-3 shadow-sm">
+      <div class="card-header py-3">
+        <h4 class="my-0 fw-normal">Prezzo richiesto</h4>
+      </div>
+      <div class="card-body">
+        <h2 class="card-title pricing-card-title">{{annuncio.prezzo_mensile | e}} €<small class="text-muted fw-light">/mese</small></h2>
+      </div>
+    </div>
+    <div class="card text-bg-light rounded-3 shadow-sm">
+      <div class="card-header">Locatario della proprietà:</div>
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="col-3 d-flex align-items-center justify-content-center">
+            <img class="annuncio-profilo col-3" src="{{url_for('static', filename='immagini/' + locatario.immagine_profilo)}}" alt="Immagine del profilo">
+          </div>
+        <h5 class="card-title col-8 ">{% if current_user.is_authenticated and current_user.id == locatario.id_utente %} Tu {% else%} {{locatario.nome | e}} {{locatario.cognome | e}} {%endif%}</h5>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mt-3">
+          <div class="col-3 d-flex align-items-center justify-content-center">
+            <img class="piccola-icona" src="{{url_for('static', filename='immagini/email.svg')}}" alt="email">
+          </div> 
+          <p class="card-text mb-0 col-8"> {{locatario.email | e}}</p>
+        </div>
+        <!--<p class="card-text mt-3">Effettua una prenotazione!</p>-->
+        {% if current_user.is_authenticated %}  
+          {% if current_user.id != locatario.id_utente %}
+            {% if prenotazione %}
+            <div class="d-flex justify-content-center">
+              <a href="{{url_for('prenotazioni_effettuate')}}"><button class="btn {% if prenotazione['stato'] == 'accettata' %} btn-success {% else %}btn-secondary {% endif%} mt-3 shadow-sm w-70" >Prenotazione {{prenotazione.stato | e}}</button></a>
+            </div> 
+            {% else %}
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-primary mt-3 w-70"  data-bs-toggle="modal" data-bs-target="#staticBackdrop">Richiedi prenotazione</button>
+            </div>  
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Richiesta di prenotazione per una visita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{{url_for('nuova_prenotazione', id_annuncio=annuncio.id_annuncio)}}" method="POST">
+                      <div class="form-group">
+                        <p>Tipo di visita</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo_visita" id="flexRadioVisita1" value="persona" required>
+                            <label class="form-check-label" for="flexRadioVisita1">Persona</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo_visita" id="flexRadioVisita2" value="remoto"required>
+                            <label class="form-check-label" for="flexRadioVisita2">Remoto</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="active" for="data" >Seleziona una data</label>
+                        <input type="date" id="data" name="data" min="{{giorni_limite[0]}}" max="{{giorni_limite[1]}}" required>
+                      </div>
+                      <div class="form-group">
+                        <label class="active" for="orario">Seleziona un orario</label>
+                        <select class="form-select" id="orario" name="orario" aria-label="Default select example" required>
+                          <option value="9-12">9-12</option>
+                          <option value="12-14">12-14</option>
+                          <option value="14-17">14-17</option>
+                          <option value="17-20">17-20</option>
+                        </select>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        <button type="submit" class="btn btn-primary" data-bs-target="{{ url_for('mostra_annuncio', id_annuncio=annuncio.id_annuncio)}}">Crea richiesta prenotazione</button>
+                      </div>
+                    </form>        
+                  </div> 
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          {% else %}
+            <div class="d-flex justify-content-center">
+              <a href="{{url_for('mieiannunci')}}"><button class="btn btn-warning shadow-sm mt-3 w-70">Gestisci proprietà</button></a>
+            </div> 
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</aside>
+<div class="row align-items-center justify-content-evenly mt-3">
+  <div class="col-7 p-0">
+    <h3>Descrizione:</h3>
+    <p>{{annuncio.descrizione | e}}</p>
+    <h3 class="mt-3">Caratteristiche:</h3>
+    <div class="d-flex align-items-center justify-content-evenly">
+      <div class="d-flex justify-content-center col-3 align-items-center">
+        <img class="icona mx-3" src="{% if annuncio.arredata %} {{url_for('static', filename='immagini/siarredo.svg')}} {% else %} {{url_for('static', filename='immagini/noarredo.svg')}}{% endif %}" alt="Icona arredamento">
+        <p class="mb-0">{% if not annuncio.arredata %}Non {% endif %}Arredata</p>
+      </div>
+      <div class="d-flex justify-content-center col-3 align-items-center">
+        <img class="icona mx-3" src="{% if annuncio.categoria_casa == 1 %} {{url_for('static', filename='immagini/casaindipendente.svg')}} {% else%} {{url_for('static', filename='immagini/' + annuncio.titolo_categoria + '.svg')}} {% endif %}" alt="Icona categoria">
+        <p class="mb-0"> {{annuncio.titolo_categoria | e}}</p>
+      </div>
+      <div class="d-flex justify-content-center col-3 align-items-center">
+        <img class="icona mx-3" src="{{url_for('static', filename='immagini/camera.svg')}}" alt="Icona locali">
+        <p class="mb-0"> Locali: {{annuncio.numero_locali | e}} {% if annuncio.numero_locali > 4 %} + {% endif %}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+
+  </div>
+</div>
+
+{% endblock %}

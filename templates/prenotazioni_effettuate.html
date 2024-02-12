@@ -1,0 +1,60 @@
+{% extends "profilo.html" %}
+{% block active_prenotazioni %} active {% endblock %}
+{% block profilo %} 
+
+<div class="container-fluid ">
+    <div class="row py-3 border-bottom mb-3">
+        <h2 class="mx-2">Le tue prenotazioni effettuate: </h2>
+    </div>
+    <div class="container">
+    {% if prenotazioni %}
+        {% for prenotazione in prenotazioni %}
+        <div class="card rounded-3 shadow-sm my-5 mx-2">
+                <div class="card-header d-flex bg-header-{{prenotazione.stato}} justify-content-between align-items-center">
+                  <h5 class="card-title m-0">Stato prenotazione:    <span class="badge {% if prenotazione.stato == 'accettata' %} text-bg-success {% elif  prenotazione.stato == 'rifiutata'%} text-bg-danger {% else %} text-bg-secondary{% endif %} rounded-pill">{{prenotazione.stato | e}}</span></h5>
+                  <div class="d-flex justify-content-end">
+                    <img class="piccola-icona " src="{{url_for('static', filename='immagini/' + prenotazione.stato +'.svg')}}" alt="Icona stato">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <a class="link-offset-2 link-underline link-underline-opacity-0" href="{{url_for('mostra_annuncio', id_annuncio = prenotazione.id_annuncio)}}"><h4 >{{ prenotazione.titolo }}</h4> </a>
+                  <p class="mt-2">Indirizzo: {{ prenotazione.indirizzo }}</p>
+                  <div class="d-flex align-items-center justify-content-between mt-2">
+                    <div class="d-flex align-items-center">
+                      <p class="mb-0">Email: </p>
+                      <img class="icona mx-3" src="{{url_for('static', filename='immagini/email.svg')}}"  alt="email">
+                      <p class="mb-0"> {{prenotazione.email | e}}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <p class="mb-0">Tipo di visita: </p>
+                      <img class="icona mx-3" src="{% if prenotazione.tipo_visita == 'persona' %} {{url_for('static', filename='immagini/persona.svg')}} {% else %} {{url_for('static', filename='immagini/remoto.svg')}}{% endif %}"  alt="Icona visita">
+                      <p class="mb-0"> In {{ prenotazione.tipo_visita | e}}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <p class="mb-0">Data di visita: </p>
+                      <img class="icona mx-3" src="{{url_for('static', filename='immagini/data.svg')}}"  alt="Icona data">
+                      <p class="mb-0"> {{prenotazione.data | e}}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <p class="mb-0">Orario di visita: </p>
+                      <img class="icona mx-3" src="{{url_for('static', filename='immagini/ora.svg')}}"  alt="Icona orario">
+                      <p class="mb-0"> {{prenotazione.orario | e}}</p>
+                    </div>
+                  </div>
+                  {% if prenotazione.stato == 'rifiutata' %}
+                  <div class="mt-2">
+                    <h5>Il locatario ha dato questa motivazione per il rifiuto:</h5>
+                    <p>{{prenotazione.motivazione | e}}</p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+        {% endfor %}
+    {% else %}
+    <div class="alert alert-secondary mt-4" role="alert">
+        Non hai ancora effettuato alcuna prenotazione!
+      </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

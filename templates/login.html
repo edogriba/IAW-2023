@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} Login {% endblock %}
+{% block current_login %} active{% endblock %}
+{% block content %}
+<div class="container-fluid col-4">
+    <div class="my-box text-center">
+        <img class="logo-grande" src="{{url_for('static', filename='immagini/logo.png')}}" alt="Logo">
+    </div>
+    <div class="my-box text-center">
+        <h3> Accedi con il tuo account</h3>
+    </div>
+    <div class="my-box">
+    <form action="/nuovologin" method="POST">
+        <div class="form-group text-center">
+            <label for="loginInputEmail">Indirizzo email</label>
+            <div class="d-flex align-items-center">
+                <div class="my-icon">
+                    <img src="{{url_for('static', filename='immagini/email.svg')}}" alt="email">
+                </div>
+                <input type="email" class="form-control" id="loginInputEmail" name="email" aria-describedby="emailHelp" placeholder="Email" required>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <label for="loginInputPassword">Password</label>
+            <div class="d-flex  align-items-center">
+                <div class="my-icon">
+                    <img src="{{url_for('static', filename='immagini/password.svg')}}" alt="password">
+                </div>
+                <input type="password" class="form-control" id="loginInputPassword"  name="password" placeholder="Password" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <small>Non hai un account? Registrati <a href="{{url_for('iscriviti')}}">qui</a></small>
+        </div>
+        <div class="form-group d-flex justify-content-center">
+            <button type="reset" class="btn btn-danger my-btn">Reset</button>
+            <button type="submit" class="btn btn-primary my-btn">Entra</button>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}

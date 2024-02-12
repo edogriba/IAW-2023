@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Profilo {% endblock%}
+{% block current_profilo %} active {% endblock %}
+{% block content %}
+{% if current_user.is_authenticated %}
+  {% block navigation_profile %}
+  <div class="container-fluid mt-3">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link {% block active_dati %} {% endblock %}" aria-current="page" href="{{url_for('mieidati')}}">I miei dati</a>
+      </li>
+      {% if current_user.tipo_utente == "Locatario" %}
+      <li class="nav-item">
+        <a class="nav-link {% block active_annunci %} {% endblock %}" href="{{url_for('mieiannunci')}}">I miei annunci</a>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link {% block active_prenotazioni %} {% endblock %}" href="{{url_for('prenotazioni_effettuate')}}">Le mie prenotazioni effettuate</a>
+      </li>
+    </ul>
+  </div>
+  {% endblock %}
+  {% block profilo %}
+
+  {% endblock%}
+{% endif %}
+{% endblock%}
