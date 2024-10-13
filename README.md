@@ -1,5 +1,4 @@
-Hi, I'm Edoardo a Computer Engineering student at Politecnico di Torino!
-
+This repository contains the code I wrote for the final project of the class Introduction to Web Applications 2023/2024 done at Politecnico di Torino. The final project consisted of coding the website of a house rental agency  in Turin.
 
 Instructions:
 
